@@ -1,34 +1,53 @@
-import useTaskStore from '../store/useTaskStore';
+import React, { useState } from 'react';
+import TodoItem from './TodoItem';
 
-const TaskList = () => {
-  const { tasks, removeTask, toggleTask } = useTaskStore();
+function TodoList() {
+    const [tasks, setTasks] = useState([
+        { id: 1, text: 'Learn React', completed: false },
+        { id: 2, text: 'Learn Testing', completed: false },
+        { id: 3, text: 'Build a Todo App', completed: false },
+    ]);
 
-  return (
-    <div>
-      <h2 className="text-lg font-semibold mb-4 text-gray-700">Task List</h2>
-      <ul className="list-none p-0">
-        {tasks.map(task => (
-          <li key={task.id} className={`flex items-center mb-2 p-2 rounded-md bg-gray-100`}>
-            <span className={`flex-grow mr-4 ${task.completed ? 'line-through' : ''}`}>
-              {task.title}
-            </span>
+    const [text, setText] = useState('');
+
+    function addTask(text) {
+        if (!text) return;
+        const newTask = {
+            id: Date.now(),
+            text,
+            completed: false,
+        };
+        setTasks([...tasks, newTask]);
+        setText('');
+    }
+
+    function deleteTask(id) {
+        setTasks(tasks.filter(task => task.id !== id));
+    }
+
+    function toggleTask(id) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, completed: !task.completed } : task
+        ));
+    }
+
+    return (
+        <div>
+            {tasks.map(task => (
+                <TodoItem
+                    key={task.id}
+                    task={task}
+                    deleteTask={deleteTask}
+                    toggleTask={toggleTask}
+                />
+            ))}
             <input
-              type="checkbox"
-              checked={task.completed}
-              onChange={() => toggleTask(task.id)}
-              className="mr-2 h-4 w-4 text-green-500 cursor-pointer"
+                value={text}
+                onChange={e => setText(e.target.value)}
             />
-            <button
-              onClick={() => removeTask(task.id)}
-              className="bg-red-500 text-white rounded-md py-1 px-2 cursor-pointer"
-            >
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+            <button onClick={() => addTask(text)}>Add</button>
+        </div>
+    );
 }
 
 export default TodoList;

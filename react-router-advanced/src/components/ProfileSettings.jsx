@@ -1,5 +1,11 @@
+import React from 'react'
+
 function ProfileSettings() {
-    return <div>Profile Settings</div>;
-  }
-  
-  export default ProfileSettings;
+  return (
+    <div>
+        <h2>Profile Settings</h2>
+    </div>
+  )
+}
+
+export default ProfileSettings

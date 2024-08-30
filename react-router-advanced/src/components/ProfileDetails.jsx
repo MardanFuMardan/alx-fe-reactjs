@@ -1,5 +1,12 @@
+
+import React from 'react'
+
 function ProfileDetails() {
-    return <div>Profile Deets</div>;
-  }
-  
-  export default ProfileDetails;
+  return (
+    <div>
+        <h2>Profile Details</h2>
+    </div>
+  )
+}
+
+export default ProfileDetails

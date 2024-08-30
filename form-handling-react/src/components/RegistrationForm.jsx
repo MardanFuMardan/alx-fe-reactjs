@@ -1,75 +1,76 @@
-import { useState } from "react";
+import React from 'react'
+import {useState} from 'react'
 
-const RegistrationForm = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function RegistrationForm() {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  const [errors, setErrors] = useState({});
+    const[errors, setErrors] =useState({})
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const validateErrors = {};
-    if (!username) {
-      validateErrors.username = "Username is required";
+    const handleUsernameChange = (e)=> {
+        setUsername(e.target.value);
+    }
+    const handleEmailChange =(e)=> {
+        setEmail(e.target.value)
+    }
+    const handlePasswordChange = (e)=> {
+        setPassword(e.target.value);
+    }
+    const handleSubmit = (e)=> {
+        e.preventDefault();
+        
+        if (!username) {
+            setErrors('Username Required!');
+            return;
+        }  
+        if (!email) {
+            setErrors('Email Required!');
+            return;
+        }
+        if (!password) {
+            setErrors('Passwor Required!');
+            return;
+        }        
     }
 
-    if (!email) {
-      validateErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      validateErrors.email = "Enter a valid email format";
-    }
-
-    if (!password) {
-      validateErrors.password = "Password is required";
-    } else if (password.length < 8) {
-      validateErrors.password = "Password must be longer than 8 characters";
-    }
-
-    setErrors(validateErrors);
-    console.log(
-      `Username: ${username}`,
-      `Email: ${email}`,
-      `Password: ${password}`
-    );
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-    >
-      <input
-        type="text"
-        placeholder="Username"
-        name="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      {errors.username && (
-        <span style={{ color: "pink" }}>{errors.username}</span>
-      )}
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      {errors.email && <span style={{ color: "red" }}>{errors.email}</span>}
-      <input
-        type="password"
-        placeholder="Password"
-        name="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      {errors.password && (
-        <span style={{ color: "pink" }}>{errors.password}</span>
-      )}
-      <button type="submit">Submit</button>
+    return (
+    <form onSubmit={handleSubmit}>
+        <div>
+            <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={handleUsernameChange}
+            placeholder="Username"
+        />
+            {errors.username && <span>{errors.username}</span>}
+        </div>
+        
+        <div>
+            <input 
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleEmailChange}
+            placeholder='Email'
+        />
+            {errors.email && <span>{errors.email}</span>}
+        </div>
+        
+        <div>
+            <input 
+            type="password"
+            name="password"
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder='Password'
+        />
+            {errors.password && <span>{errors.password}</span>}
+        </div>
+        <button type='submit'>Submit</button>
     </form>
-  );
-};
+    )
+}
 
-export default ControlledForm;
+export default RegistrationForm

@@ -1,14 +1,13 @@
-import { QueryClient, QueryClientProvider } from 'react-query';
 
-const queryClient = new QueryClient();
-
+import {QueryClient, QueryClientProvider} from 'react-query'
 function App() {
+
+  const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <PostsComponent />
+        <PostsComponent />
     </QueryClientProvider>
-  );
+  )
 }
 
-
-export default App;
+export default App

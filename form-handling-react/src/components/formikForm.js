@@ -1,34 +1,35 @@
-import { Formik, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const validationSchema = Yup.object({
-    name: Yup.string().required('Name is a Fuckin must'),
-    email: Yup.string().email('Invalid Babe try again').required('Email is required Sweethear'),
-    paasword: Yup.string().password('Wrong password bitch').required('Password is required')
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters long")
+    .required("Password is required"),
 });
 
-
-function FormikForm() {
-    return (
-        <Formik
-            initialValues={{ name: "", email: "", password: "" }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => {
-                console.log(values);
-            } }>
-            {() => (
-                <form>
-                    <Field type='text' name='name' />
-                    <ErrorMessage name='name' component='div' />
-                    <Field type='email' name='email' />
-                    <ErrorMessage name='email' component='div' />
-                    <Field type='password' name='password' />
-                    <ErrorMessage name='password' component='div' />
-                    <button type='submit'>Submit</button>
-                </form>
-            )}
-        </Formik>
-    );
+function formikForm() {
+  return (
+    <Formik
+      initialValues={{ name: "", email: "", password: "" }}
+      validateSchema={validationSchema}
+      onSubmit={(values) => {
+        console.log(values);
+      }}
+    >
+      {() => (
+        <Form>
+          <Field type="text" name="name" />
+          <Field type="email" name="email" />
+          <Field type="password" name="password" />
+          <ErrorMessage name="email" component="div" />
+          <button type="submit">Submit</button>
+        </Form>
+      )}
+    </Formik>
+  );
 }
 
-export default FormikForm;
+export default formikForm;
