@@ -1,32 +1,35 @@
-import TodoList from "../components/TodoList";
-import AddTodoForm from "../components/AddTodoForm";
-import { render, fireEvent, screen } from "@testing-library/react";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import TodoList from '../TodoList';
 
-//Test to see if TodoList renders correctly
-test("renders TodoList component with initial todo", () => {
+describe('TodoList Component', () => {
+  test('renders the initial todos', () => {
     render(<TodoList />);
-    expect(screen.getByText("Sample Todo")).toBeInTheDocument();
-    expect(screen.getByRole('checkbox')).not.toBeChecked();
-    expect(screen.getByText("Remove")).toBeInTheDocument();
-});
+    expect(screen.getByText('Learn React')).toBeInTheDocument();
+    expect(screen.getByText('Build a Todo List')).toBeInTheDocument();
+  });
 
-
-// a test to verify that toggling todos works
-test("toggles todo completion", () => {
+  test('adds a new todo', () => {
     render(<TodoList />);
+    fireEvent.change(screen.getByPlaceholderText('Enter a new todo'), {
+      target: { value: 'Write Tests' },
+    });
+    fireEvent.click(screen.getByText('Add Todo'));
+    expect(screen.getByText('Write Tests')).toBeInTheDocument();
+  });
 
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
-
-    expect(checkbox).toBeChecked();
-});
-
-
-// a test to verify that deleting todos works
-test("removes a todo item", () => {
+  test('toggles a todo', () => {
     render(<TodoList />);
+    const todo = screen.getByText('Learn React');
+    fireEvent.click(todo);
+    expect(todo).toHaveStyle('text-decoration: line-through');
+    fireEvent.click(todo);
+    expect(todo).not.toHaveStyle('text-decoration: line-through');
+  });
 
-    fireEvent.click(screen.getByText("Remove"));
-
-    expect(screen.queryByText("Sample Todo")).toBeNull();
+  test('deletes a todo', () => {
+    render(<TodoList />);
+    fireEvent.click(screen.getByText('Delete'));
+    expect(screen.queryByText('Learn React')).not.toBeInTheDocument();
+  });
 });
