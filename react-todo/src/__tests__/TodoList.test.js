@@ -1,32 +1,29 @@
-import TodoList from "../components/TodoList";
-import AddTodoForm from "../components/AddTodoForm";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from '@testing-library/react';
+import TodoList from '../components/TodoList';
 
-//Test to see if TodoList renders correctly
-test("renders TodoList component with initial todo", () => {
-    render(<TodoList />);
-    expect(screen.getByText("Sample Todo")).toBeInTheDocument();
-    expect(screen.getByRole('checkbox')).not.toBeChecked();
-    expect(screen.getByText("Remove")).toBeInTheDocument();
+test('renders TodoList component', () => {
+  render(<TodoList />);
+  const heading = screen.getByText(/Todo List/i);
+  expect(heading).toBeInTheDocument();
 });
 
-
-// a test to verify that toggling todos works
-test("toggles todo completion", () => {
-    render(<TodoList />);
-
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
-
-    expect(checkbox).toBeChecked();
+test('adds a new todo', () => {
+  render(<TodoList />);
+  const input = screen.getByPlaceholderText(/Add a new todo/i);
+  fireEvent.change(input, { target: { value: 'New Todo' } });
+  fireEvent.click(screen.getByText(/Add Todo/i));
+  expect(screen.getByText(/New Todo/i)).toBeInTheDocument();
 });
 
+test('toggles a todo', () => {
+  render(<TodoList />);
+  const firstTodo = screen.getByText(/Learn React/i);
+  fireEvent.click(firstTodo);
+  expect(firstTodo).toHaveStyle('text-decoration: line-through');
+});
 
-// a test to verify that deleting todos works
-test("removes a todo item", () => {
-    render(<TodoList />);
-
-    fireEvent.click(screen.getByText("Remove"));
-
-    expect(screen.queryByText("Sample Todo")).toBeNull();
+test('deletes a todo', () => {
+  render(<TodoList />);
+  fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+  expect(screen.queryByText(/Learn React/i)).not.toBeInTheDocument();
 });

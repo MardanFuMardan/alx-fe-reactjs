@@ -1,17 +1,15 @@
-import React from 'react'
-import AddTodoForm from './components/AddTodoForm';
+import React from 'react';
 import TodoList from './components/TodoList';
+import './App.css';
 
 function App() {
-
-
   return (
-    <div className='toto-app'>
-      <h1>Todo-List with Jest</h1>
-      <AddTodoForm />
-      <TodoList />
+    <div className="App">
+      <header className="App-header">
+        <TodoList />
+      </header>
     </div>
   );
 }
 
-export default App
+export default App;
