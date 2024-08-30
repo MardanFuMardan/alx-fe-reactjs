@@ -1,29 +1,32 @@
-import React from 'react';
-import useRecipeStore from '../stores/useRecipeStore';
+import React, { useEffect } from 'react';
+import { useRecipeStore } from './recipeStore';
 import { Link } from 'react-router-dom';
 
-const RecommendationsList = () => {
-  // Fetch favorite recipes from the store
-  const favoriteRecipes = useRecipeStore((state) => state.favoriteRecipes());
+const Recommendations = () => {
+  const recommendations = useRecipeStore(state => state.recommendations);
+  const generateRecommendations = useRecipeStore(state => state.generateRecommendations);
+  const favorites = useRecipeStore(state => state.favorites);
 
-  if (favoriteRecipes.length === 0) {
-    return <p>No recommendations available. Add some recipes to your favorites!</p>;
+  useEffect(() => {
+    generateRecommendations();
+  }, [favorites, generateRecommendations]);
+
+  if (recommendations.length === 0) {
+    return <div>No recommendations available. Mark some recipes as favorites to see suggestions!</div>;
   }
 
   return (
     <div>
-      <h2>Recommended Recipes</h2>
-      <ul>
-        {favoriteRecipes.map((recipe) => (
-          <li key={recipe.id}>
-            <h3>{recipe.title}</h3>
-            <p>{recipe.description}</p>
-            <Link to={`/recipes/${recipe.id}`}>View Details</Link>
-          </li>
-        ))}
-      </ul>
+      <h2>Recommended for You</h2>
+      {recommendations.map(recipe => (
+        <div key={recipe.id}>
+          <h3>{recipe.title}</h3>
+          <p>{recipe.description}</p>
+          <Link to={`/recipe/${recipe.id}`}>View Details</Link>
+        </div>
+      ))}
     </div>
   );
 };
 
-export default RecommendationsList;
+export default Recommendations;

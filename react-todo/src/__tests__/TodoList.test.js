@@ -1,38 +1,62 @@
-import React, {useState} from 'react';
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import TodoList from '../components/TodoList';
 
-describe('TodoList Component', () => {
-  test('renders todo items', () => {
-    const todos = [
-      { id: 1, text: 'Learn React', completed: false },
-      { id: 2, text: 'Build a Todo App', completed: false },
-    ];
-    render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
+describe('TodoList', () => {
+    test('renders TodoList component', () => {
+        render(<TodoList />);
+        expect(screen.getByText('Todo List')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Add new todo')).toBeInTheDocument();
+        expect(screen.getByText('Add Todo')).toBeInTheDocument();
+    });
 
-    expect(screen.getByText('Learn React')).toBeInTheDocument();
-    expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
-  });
+    test('displays initial todos', () => {
+        render(<TodoList />);
+        expect(screen.getByText('Learn React')).toBeInTheDocument();
+        expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
+        expect(screen.getByText('Write Tests')).toBeInTheDocument();
+    });
 
-  test('toggles todo completion', () => {
-    const toggleTodo = jest.fn();
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    render(<TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={() => {}} />);
+    test('adds a new todo', () => {
+        render(<TodoList />);
+        const input = screen.getByPlaceholderText('Add new todo');
+        const addButton = screen.getByText('Add Todo');
 
-    const todoItem = screen.getByText('Learn React');
-    todoItem.click();
-    expect(toggleTodo).toHaveBeenCalledWith(1);
-  });
+        fireEvent.change(input, { target: { value: 'New Todo Item' } });
+        fireEvent.click(addButton);
 
-  test('displays message when no todos are present', () => {
-    render(<TodoList todos={[]} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(screen.getByText('No todos available')).toBeInTheDocument();
-  });
+        expect(screen.getByText('New Todo Item')).toBeInTheDocument();
+        expect(input.value).toBe('');  // Check if input is cleared after adding
+    });
 
-  test('matches snapshot', () => {
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    const { asFragment } = render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(asFragment()).toMatchSnapshot();
+    test('toggles a todo', () => {
+        render(<TodoList />);
+        const todoItem = screen.getByText('Learn React');
 
-  });
+        fireEvent.click(todoItem);
+        expect(todoItem).toHaveStyle('text-decoration: line-through');
+
+        fireEvent.click(todoItem);
+        expect(todoItem).toHaveStyle('text-decoration: none');
+    });
+
+    test('deletes a todo', () => {
+        render(<TodoList />);
+        const deleteButtons = screen.getAllByText('Delete');
+        const firstTodoDeleteButton = deleteButtons[0];
+
+        fireEvent.click(firstTodoDeleteButton);
+        expect(screen.queryByText('Learn React')).not.toBeInTheDocument();
+    });
+
+    test('does not add empty todos', () => {
+        render(<TodoList />);
+        const addButton = screen.getByText('Add Todo');
+        const initialTodosCount = screen.getAllByRole('listitem').length;
+
+        fireEvent.click(addButton);  // Try to add an empty todo
+
+        expect(screen.getAllByRole('listitem')).toHaveLength(initialTodosCount);  // Todo count should not change
+    });
 });

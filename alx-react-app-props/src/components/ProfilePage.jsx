@@ -1,13 +1,6 @@
-import React from 'react';
-import UserDetails from './UserDetails';
+import UserContext from './UserContext';
 
-function ProfilePage() {
-  return (
-    <div>
-      <h1>Profile Page</h1>
-      <UserDetails />  {/* UserDetails will consume the UserContext */}
-    </div>
-  );
-}
+const ProfilePage =  () => useContext(UserContext);
+
 
 export default ProfilePage;

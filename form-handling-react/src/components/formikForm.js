@@ -1,61 +1,45 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 
-// Validation schema using Yup
 const validationSchema = Yup.object({
-  username: Yup.string().required('Username is required'),
-  email: Yup.string().email('Invalid email address').required('Email is required'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+    username: Yup.string().required('Username is required'),
+    email: Yup.string().email('Invalid Email').required('Email is required'),
+    password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required')
 });
 
 const FormikForm = () => {
-  const initialValues = {
-    username: '',
-    email: '',
-    password: '',
-  };
+    return (
+        <Formik 
+            initialValues={{username: '', email: '', password: ''}}
+            validationSchema={validationSchema}
+            onSubmit={(values, { resetForm }) => {
+                console.log(values);
+                alert('Form submitted successfully!');
+                resetForm();  
+            }}
+        >
+            {() => (
+                <Form>
+                    <h1>Formik Registration Form</h1>
+                    
+                    <label>Username:</label>
+                    <Field type='text' name='username' placeholder="Enter your Username"
+                    />
+                    <ErrorMessage name='username' component='div' />
 
-  const handleSubmit = (values) => {
-    // Handle form submission logic here
-    console.log('Form submitted:', values);
-  };
+                    <label>Email:</label>
+                    <Field type='email' name='email' placeholder="Enter your email"/>
+                    <ErrorMessage name='email' component='div' />
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form>
-          <h2>Register</h2>
-          
-          <div>
-            <label htmlFor="username">Username:</label>
-            <Field type="text" id="username" name="username" />
-            <ErrorMessage name="username" component="div" style={{ color: 'red' }} />
-          </div>
-          
-          <div>
-            <label htmlFor="email">Email:</label>
-            <Field type="email" id="email" name="email" />
-            <ErrorMessage name="email" component="div" style={{ color: 'red' }} />
-          </div>
-          
-          <div>
-            <label htmlFor="password">Password:</label>
-            <Field type="password" id="password" name="password" />
-            <ErrorMessage name="password" component="div" style={{ color: 'red' }} />
-          </div>
-          
-          <button type="submit" disabled={isSubmitting}>
-            Register
-          </button>
-        </Form>
-      )}
-    </Formik>
-  );
-};
+                    <label>Password:</label>
+                    <Field type='password' name='password' placeholder="Enter your Password"/>
+                    <ErrorMessage name='password' component='div' />
+
+                    <button type="submit">Register</button>
+                </Form>
+            )}
+        </Formik>
+    );
+}
 
 export default FormikForm;

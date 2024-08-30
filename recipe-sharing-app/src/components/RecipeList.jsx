@@ -1,28 +1,38 @@
-import React from 'react';
-import useRecipeStore from '../stores/useRecipeStore';
 import { Link } from 'react-router-dom';
+import { useRecipeStore } from './recipeStore';
+import { useEffect } from 'react';
 
 const RecipeList = () => {
-  const recipes = useRecipeStore((state) => state.recipes);
-   // Fetch the filtered recipes from the store
-   const filteredRecipes = useRecipeStore((state) => state.filteredRecipes());
-   const searchTerm = useRecipeStore((state) => state.searchTerm);
+  const { recipes, filteredRecipes, searchTerm, filterRecipes } = useRecipeStore(state => ({ 
+    recipes: state.recipes,
+    filteredRecipes: state.filteredRecipes,
+    searchTerm: state.searchTerm,
+    filterRecipes: state.filterRecipes
+  }));
 
-  if (recipes.length === 0) {
-    return <p>No recipes available.</p>;
-  }
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      useRecipeStore.setState({ filteredRecipes: recipes });
+    } else {
+      filterRecipes();
+    }
+  }, [searchTerm, filterRecipes, recipes]);
 
+   
   return (
-    <ul>
-      {recipes.map((recipe) => (
-        <li key={recipe.id}>
-          <h3>{recipe.title}</h3>
-          <p>{recipe.description}</p>
-          <Link to={`/recipes/${recipe.id}`}>View Details</Link>
-        </li>
-      ))}
-    </ul>
+    <div>
+      {filteredRecipes.length > 0 ? (
+        filteredRecipes.map(recipe => (
+          <div key={recipe.id}>
+            <h3>{recipe.title}</h3>
+            <p>{recipe.description}</p>
+            <Link to={`/recipe/${recipe.id}`}>View Details</Link>
+          </div>
+        ))
+      ) : (
+        <p>No recipes found For what you are looking for.</p>
+      )}
+    </div>
   );
 };
-
 export default RecipeList;
