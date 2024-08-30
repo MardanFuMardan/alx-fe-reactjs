@@ -3,20 +3,36 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RecipeList from './components/RecipeList';
 import AddRecipeForm from './components/AddRecipeForm';
 import RecipeDetails from './components/RecipeDetails';
-import FavoritesList from './components/FavoritesList';
-import RecommendationList from './components/RecommendationList';
-
+import EditRecipeForm from './components/EditRecipeForm';
+import useRecipeStore from './components/useRecipeStore';
+import SearchBar from './components/SearchBar';
 function App() {
+  const recipes = useRecipeStore((state) => state.recipes);
+  const addRecipe = useRecipeStore((state) => state.addRecipe);
+
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<RecipeList />} />
-        <Route path="/add" element={<AddRecipeForm />} />
-        <Route path="/recipe/:recipeId" element={<RecipeDetails />} />
-        <Route path="/favorites" element={<FavoritesList />} />
-        <Route path="/recommendations" element={<RecommendationList />} />
-      </Routes>
+      <div>
+        <h1>My Recipe App</h1>
+        <SearchBar/>
+        <RecommendationsList />
+        <Routes>
+          {/* Home route displaying AddRecipeForm and RecipeList */}
+          <Route
+            path="/"
+            element={
+              <>
+                <AddRecipeForm addRecipe={addRecipe} />
+                <RecipeList recipes={recipes} />
+              </>
+            }
+          />
+          {/* Route for displaying recipe details */}
+          <Route path="/recipes/:id" element={<RecipeDetails />} />
+        </Routes>
+      </div>
     </Router>
+
   );
 }
 

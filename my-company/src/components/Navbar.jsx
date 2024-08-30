@@ -2,46 +2,30 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
-    return (
-        <nav style={styles.nav}>
-            <ul style={styles.ul}>
-                <li>
-                    <Link to="/" style={styles.link}>Home</Link>
-                </li>
-                <li>
-                    <Link to="/About" style={styles.link}>About</Link>
-                </li>
-                <li>
-                    <Link to="/Services" style={styles.link}>Services</Link>
-                </li>
-                <li>
-                    <Link to="/Contact" style={styles.link}>Contact</Link>
-                </li>
-            </ul>
-        </nav>
-    );
-}
+  const navStyle = {
+    backgroundColor: '#333',
+    padding: '10px',
+  };
 
-const styles = {
-    nav: {
-        backgroundColor: '#333',
-        padding: '15px',
-    },
-    ul: {
-        display: 'flex',
-        justifyContent: 'space-around',
-        listStyleType: 'none',
-        margin: 0,
-        padding: 0,
-    },
-    link: {
-        color: 'white',
-        textDecoration: 'none',
-        fontSize: '18px',
-        padding: '10px 20px',
-        borderRadius: '5px',
-        transition: 'background-color 0.3s',
-    }
-};
+  const linkStyle = {
+    display: 'flex',
+    color: '#fff',
+    margin: '0 10px',
+    textDecoration: 'none',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
+  return (
+    <nav style={navStyle}>
+      <ul style={{ listStyleType: 'none', display: 'flex' }}>
+        <li><Link to="/" style={linkStyle}>Home</Link></li>
+        <li><Link to="/about" style={linkStyle}>About</Link></li>
+        <li><Link to="/services" style={linkStyle}>Services</Link></li>
+        <li><Link to="/contact" style={linkStyle}>Contact</Link></li>
+      </ul>
+    </nav>
+  );
+}
 
 export default Navbar;

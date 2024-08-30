@@ -1,34 +1,22 @@
+import React from "react";
+import { Routes, Route, Link } from "react-router-dom";
+import ProfileDetails from'./ProfileDetails';
+import ProfileSettings from './ProfileSettings';
 
-import React from 'react'
-import {BrowserRouter as Router, Routes, Route, Link, Switch, useRouteMatch} from 'react-router-dom'
-import ProfileDetails from './ProfileDetails'
-import ProfileSettings from './ProfileSettings'
-
-function Profile() {
-    let {path, url} = useRouteMatch();
-
+const Profile = () => {
     return (
-    <div>
-        <h2>Profile</h2>
-        <ul>
-            <li>
-                <Link to={`${url}/ProfileDetails`}>Profile Details</Link>
-            </li>
-            <li>
-                <Link to={`${url}/ProfileSettings`}>Profile Settings</Link>
-            </li>
-        </ul>
-        <Switch>
-            <Route exact path={path}>Please Select an option.</Route>
-            <Route path={`${path}/ProfileDetails`}>
-                <ProfileDetails />
-            </Route>
-            <Route path={`${path}/ProfileSettings`}>
-                <ProfileSettings />
-            </Route>
-        </Switch>
-    </div>
-    )
-}
+        <div>
+            <h2>Profile</h2>
+            <nav>
+                <link to ="details">Profile Details</link>
+                <link to ="settings">Profile Settings</link>
+            </nav>
+            <Routes>
+                <Route path="details" element={<ProfileDetails />}/>
+                <Route path="settings" element={<ProfileSettings />}/>
+            </Routes>
+        </div>
+    );
+};
 
-export default Profile
+export default Profile;

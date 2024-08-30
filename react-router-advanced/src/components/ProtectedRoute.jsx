@@ -1,12 +1,15 @@
-import React from 'react'
-import { Outlet, Navigate } from 'react-router-dom'
-import { useAuth } from "./AuthProvider"
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';  // Import useAuth hook
 
-function ProtectedRoute() {
-    const {inAuthenticated} = useAuth()
-    return (
-        inAuthenticated ? <Outlet/> : <Navigate to = "/login" />
-    )
-}
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();  // Use the useAuth hook
 
-export default ProtectedRoute
+  if (!isAuthenticated) {
+    return <Navigate to="/" />;  // Redirect to the home page if not authenticated
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;

@@ -1,37 +1,38 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import TodoList from "../components/TodoList";
-import React from "react";
+import React, {useState} from 'react';
+import { render, screen } from '@testing-library/react';
+import TodoList from '../components/TodoList';
 
-const mockedAdd = jest.fn();
+describe('TodoList Component', () => {
+  test('renders todo items', () => {
+    const todos = [
+      { id: 1, text: 'Learn React', completed: false },
+      { id: 2, text: 'Build a Todo App', completed: false },
+    ];
+    render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
 
-test("renders TodoList component with initial tasks", () => {
-  render(<TodoList add={mockedAdd} />);
-  expect(screen.getByText("Learn React")).toBeInTheDocument();
-  expect(screen.getByText("Learn Testing")).toBeInTheDocument();
-  expect(screen.getByText("Build a Todo App")).toBeInTheDocument();
-  expect(screen.getByText("Add")).toBeInTheDocument();
-});
+    expect(screen.getByText('Learn React')).toBeInTheDocument();
+    expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
+  });
 
-test("adds a new todo", () => {
-  render(<TodoList add={mockedAdd} />);
-  const input = screen.getByRole("textbox");
-  fireEvent.change(input, { target: { value: "New Task" } });
-  fireEvent.click(screen.getByText("Add"));
-  expect(screen.getByText("New Task")).toBeInTheDocument();
-});
+  test('toggles todo completion', () => {
+    const toggleTodo = jest.fn();
+    const todos = [{ id: 1, text: 'Learn React', completed: false }];
+    render(<TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={() => {}} />);
 
-test("toggles a todo completed state", () => {
-  render(<TodoList add={mockedAdd} />);
-  const task = screen.getByText("Learn React");
-  fireEvent.click(screen.getByRole("checkbox", { name: /Learn React/i }));
-  expect(task).toHaveStyle("text-decoration: line-through");
-  fireEvent.click(screen.getByRole("checkbox", { name: /Learn React/i }));
-  expect(task).toHaveStyle("text-decoration: none");
-});
+    const todoItem = screen.getByText('Learn React');
+    todoItem.click();
+    expect(toggleTodo).toHaveBeenCalledWith(1);
+  });
 
-test("deletes a todo", () => {
-  render(<TodoList add={mockedAdd} />);
-  const deleteButton = screen.getAllByText("X")[0];
-  fireEvent.click(deleteButton);
-  expect(screen.queryByText("Learn React")).not.toBeInTheDocument();
+  test('displays message when no todos are present', () => {
+    render(<TodoList todos={[]} toggleTodo={() => {}} deleteTodo={() => {}} />);
+    expect(screen.getByText('No todos available')).toBeInTheDocument();
+  });
+
+  test('matches snapshot', () => {
+    const todos = [{ id: 1, text: 'Learn React', completed: false }];
+    const { asFragment } = render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
+    expect(asFragment()).toMatchSnapshot();
+
+  });
 });

@@ -1,12 +1,15 @@
+import React from "react";
+import { useParams } from "react-router-dom";
 
-import {useParams} from 'react-router-dom'
-import React from 'react'
-
-function BlogPost() {
-    const {userId} = useParams()
+const BlogPost = () => {
+    const {id } = useParams();
+    
     return (
-        <h3>User ID: {userId}</h3>
-    )
-}
+        <div>
+            <h2>Blog Post {postId}</h2>
+            {/* Fetch and display the post data based on postId */}
+        </div>
+    );
+};
 
-export default BlogPost
+export default BlogPost;
