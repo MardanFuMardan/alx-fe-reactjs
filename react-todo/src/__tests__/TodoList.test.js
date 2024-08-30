@@ -17,6 +17,11 @@ test('adds a new todo', () => {
 
 test('deletes a todo', () => {
   render(<TodoList />);
+  // Ensure initial todos are rendered
+  expect(screen.getByText(/Learn React/i)).toBeInTheDocument();
+  
   fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+  
+  // Ensure the deleted todo is no longer in the document
   expect(screen.queryByText(/Learn React/i)).not.toBeInTheDocument();
 });
