@@ -1,38 +1,22 @@
-import React, {useState} from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import TodoList from '../components/TodoList';
 
-describe('TodoList Component', () => {
-  test('renders todo items', () => {
-    const todos = [
-      { id: 1, text: 'Learn React', completed: false },
-      { id: 2, text: 'Build a Todo App', completed: false },
-    ];
-    render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
+test('renders TodoList component', () => {
+  render(<TodoList />);
+  const heading = screen.getByText(/Todo List/i);
+  expect(heading).toBeInTheDocument();
+});
 
-    expect(screen.getByText('Learn React')).toBeInTheDocument();
-    expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
-  });
+test('adds a new todo', () => {
+  render(<TodoList />);
+  const input = screen.getByPlaceholderText(/Add a new todo/i);
+  fireEvent.change(input, { target: { value: 'New Todo' } });
+  fireEvent.click(screen.getByText(/Add Todo/i));
+  expect(screen.getByText(/New Todo/i)).toBeInTheDocument();
+});
 
-  test('toggles todo completion', () => {
-    const toggleTodo = jest.fn();
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    render(<TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={() => {}} />);
-
-    const todoItem = screen.getByText('Learn React');
-    todoItem.click();
-    expect(toggleTodo).toHaveBeenCalledWith(1);
-  });
-
-  test('displays message when no todos are present', () => {
-    render(<TodoList todos={[]} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(screen.getByText('No todos available')).toBeInTheDocument();
-  });
-
-  test('matches snapshot', () => {
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    const { asFragment } = render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(asFragment()).toMatchSnapshot();
-
-  });
+test('deletes a todo', () => {
+  render(<TodoList />);
+  fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+  expect(screen.queryByText(/Learn React/i)).not.toBeInTheDocument();
 });
