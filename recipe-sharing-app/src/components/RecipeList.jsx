@@ -1,38 +1,67 @@
-import { Link } from 'react-router-dom';
-import { useRecipeStore } from './recipeStore';
-import { useEffect } from 'react';
+import useRecipeStore from "./recipeStore";
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
+import { useEffect } from "react";
 
 const RecipeList = () => {
-  const { recipes, filteredRecipes, searchTerm, filterRecipes } = useRecipeStore(state => ({ 
-    recipes: state.recipes,
-    filteredRecipes: state.filteredRecipes,
-    searchTerm: state.searchTerm,
-    filterRecipes: state.filterRecipes
-  }));
+  const recipes = useRecipeStore((state) => state.recipes);
+  const {
+    searchTerm,
+    filterRecipes,
+    filteredRecipes,
+    favorites,
+    addFavorite,
+    removeFavorite,
+  } = useRecipeStore();
 
   useEffect(() => {
-    if (searchTerm.trim() === '') {
-      useRecipeStore.setState({ filteredRecipes: recipes });
-    } else {
-      filterRecipes();
-    }
-  }, [searchTerm, filterRecipes, recipes]);
+    filterRecipes();
+  }, [searchTerm, filterRecipes]);
 
-   
-  return (
-    <div>
-      {filteredRecipes.length > 0 ? (
-        filteredRecipes.map(recipe => (
+  const toggleButton = (recipeId) => {
+    if (favorites.includes(recipeId)) {
+      removeFavorite(recipeId);
+    } else {
+      addFavorite(recipeId);
+    }
+  };
+
+  if (searchTerm === "") {
+    return (
+      <div>
+        <SearchBar />
+        {recipes.map((recipe) => (
+          <div
+            key={recipe.id}
+          >
+            <h3>{recipe.title}</h3>
+            <p>{recipe.description}</p>
+            <Link to={`/details/${recipe.id}`}>More Details</Link>
+            <button
+              onClick={() => toggleButton(recipe.id)}
+            >
+              {favorites.includes(recipe.id)
+                ? "Remove from Favorites"
+                : "Favorites"}
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <SearchBar />
+        {filteredRecipes.map((recipe) => (
           <div key={recipe.id}>
             <h3>{recipe.title}</h3>
             <p>{recipe.description}</p>
-            <Link to={`/recipe/${recipe.id}`}>View Details</Link>
+            <Link to={`/details/${recipe.id}`}>More Details</Link>
           </div>
-        ))
-      ) : (
-        <p>No recipes found For what you are looking for.</p>
-      )}
-    </div>
-  );
+        ))}
+      </div>
+    );
+  }
 };
+
 export default RecipeList;

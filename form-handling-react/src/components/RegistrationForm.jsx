@@ -1,82 +1,75 @@
 import { useState } from "react";
+
 const RegistrationForm = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({});
-    
-    const error =  {}
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!username) {
-            errors.username(`Username must be at least 3 characters long.`);
-            return;
-        }
-        if (!password) {
-            errors.password("Password must be at least 8 characters");
-            return;
-          }
-          if (!email) {
-            errors.email("Invalid email");
-            return;
-          } 
-        setErrors(error)
-        resetForm()
-        
-        console.log('Username:', username);
-        console.log('Email:', email);
-        console.log('Password:', password);
-    };
-    const resetForm = () => {
-        setUsername('');
-        setEmail('');
-        setPassword('');
-      };
-      
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    return (
-        <>
-        <h1>Components Form</h1>
-        <form onSubmit={handleSubmit}>
+  const [errors, setErrors] = useState({});
 
-            <div>
-            <label htmlFor="username">Username:</label>
-            <input 
-                type="text"
-                value={username} 
-                placeholder="Enter your Username"
-                required
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-            <div>
-            <label htmlFor="email">Email:</label>
-            <input 
-                type="email"
-                value={email} 
-                placeholder="Enter your email"
-                required
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            </div>
+    const validateErrors = {};
+    if (!username) {
+      validateErrors.username = "Username is required";
+    }
 
-            <div>
-            <label htmlFor="password">Password:</label>
-            <input 
-                type="password"
-                value={password} 
-                placeholder="Enter your Password"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            </div>
-            <button 
-                type="submit">
-                    Register
-            </button>
-        </form>
-        </>
-    )
-}
-export default RegistrationForm;
+    if (!email) {
+      validateErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      validateErrors.email = "Enter a valid email format";
+    }
+
+    if (!password) {
+      validateErrors.password = "Password is required";
+    } else if (password.length < 8) {
+      validateErrors.password = "Password must be longer than 8 characters";
+    }
+
+    setErrors(validateErrors);
+    console.log(
+      `Username: ${username}`,
+      `Email: ${email}`,
+      `Password: ${password}`
+    );
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+    >
+      <input
+        type="text"
+        placeholder="Username"
+        name="username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      {errors.username && (
+        <span style={{ color: "pink" }}>{errors.username}</span>
+      )}
+      <input
+        type="email"
+        placeholder="Email"
+        name="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      {errors.email && <span style={{ color: "red" }}>{errors.email}</span>}
+      <input
+        type="password"
+        placeholder="Password"
+        name="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      {errors.password && (
+        <span style={{ color: "pink" }}>{errors.password}</span>
+      )}
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default ControlledForm;

@@ -1,13 +1,10 @@
-function UserDetails() {
+function UserData({ userData }) {
     return (
-        <UserContext.Consumer>
-           <div>
-        <p>Name: {name}</p>
-        <p>Email: {email}</p>
-      </div>
-        </UserContext.Consumer>
-      
+        <div>
+            <p>Name: {userData}</p>
+            <p>Email: {userData}</p>
+        </div>
     );
-  }
-  
-  export default UserDetails;
+}
+
+export default UserDetails;

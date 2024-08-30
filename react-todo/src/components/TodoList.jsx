@@ -1,62 +1,34 @@
-import React, { useState } from "react";
+import useTaskStore from '../store/useTaskStore';
 
-const TodoList = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: "Learn React", completed: false },
-    { id: 2, text: "Build a Todo App", completed: false },
-    { id: 3, text: "Write Tests", completed: false },
-  ]);
-  const [newTodo, setNewTodo] = useState("");
-
-  const addTodo = (e) => {
-    e.preventDefault();
-    if (newTodo.trim()) {
-      setTodos([...todos, { id: Date.now(), text: newTodo, completed: false }]);
-      setNewTodo("");
-    }
-  };
-
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
+const TaskList = () => {
+  const { tasks, removeTask, toggleTask } = useTaskStore();
 
   return (
     <div>
-      <h1>Todo List</h1>
-      <form onSubmit={addTodo}>
-        <input
-          type="text"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="Add new todo"
-        />
-        <button type="submit">Add Todo</button>
-      </form>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <span
-              onClick={() => toggleTodo(todo.id)}
-              style={{
-                textDecoration: todo.completed ? "line-through" : "none",
-              }}
-            >
-              {todo.text}
+      <h2 className="text-lg font-semibold mb-4 text-gray-700">Task List</h2>
+      <ul className="list-none p-0">
+        {tasks.map(task => (
+          <li key={task.id} className={`flex items-center mb-2 p-2 rounded-md bg-gray-100`}>
+            <span className={`flex-grow mr-4 ${task.completed ? 'line-through' : ''}`}>
+              {task.title}
             </span>
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => toggleTask(task.id)}
+              className="mr-2 h-4 w-4 text-green-500 cursor-pointer"
+            />
+            <button
+              onClick={() => removeTask(task.id)}
+              className="bg-red-500 text-white rounded-md py-1 px-2 cursor-pointer"
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 export default TodoList;
