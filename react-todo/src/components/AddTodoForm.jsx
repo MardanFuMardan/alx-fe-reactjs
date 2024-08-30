@@ -1,27 +1,23 @@
-import { useState } from 'react';
+import React, {useState} from "react";
 
-const AddTodoForm = (props) => {
-  const [newTodo, setNewTodo] = useState('');
-// eslint-disable-next-line react/prop-types
-const onAddTodo = props.onAddTodo;
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (newTodo.trim() === '') return; // Prevent adding empty todos
-    onAddTodo(newTodo); // Call the function passed via props
-    setNewTodo(''); // Clear the input field
-  };
+const AddTodoForm = () => {
+    const [inputValue, setInputValue] = useState('');
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Add a new todo"
-      />
-      <button type="submit">Add Todo</button>
-    </form>
-  );
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if(inputValue.trim()) {
+            addTodo(inputValue.trim());
+            setInputValue('');
+        }
+    };
+
+    return(
+        <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="Add a new todo" value={inputValue} onChange={(e) => setInputValue(e.target.value)}  />
+            <button type="submit">Add</button>
+        </form>
+    );
+
 };
 
 export default AddTodoForm;
