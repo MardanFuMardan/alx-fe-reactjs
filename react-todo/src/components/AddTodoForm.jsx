@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import useTodo from "./store/todoStore";
 
-const AddTodoForm = () => {
-    const [text, setText] = useState('');
-    const handleSubmite = (e) => {
+export default function AddTodoForm() {
+    const [list, setList] = useState("");
+    const addList = useTodo(state => state.addTodo);
+
+    function handleChange(e) {
+        setList(e.target.value);
+    }
+
+    function handleSubmit(e) {
         e.preventDefault();
-        if (text.trim()) {
-            AddTodo(text);
-            setText('');
-        }
-    };
+        addList(list);
+        setList("");
+    }
 
-  return (
-    <form onClick={handleSubmite}>
-        <input 
-        type="text" 
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder='Add a new Todo '
-        />
-        <button type='submit'>Add Todo</button>
-    </form>
-  );    
-};
-
-
-export default AddTodoForm;
+    return (
+        <form onSubmit={handleSubmit} className="form-todo">
+            <input type="text"
+                name="list"
+                value={list}
+                onChange={handleChange}
+            />
+            <button type="submit">Add</button>
+        </form>
+    );
+}

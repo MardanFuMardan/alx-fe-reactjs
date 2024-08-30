@@ -1,38 +1,32 @@
-import React, {useState} from 'react';
-import { render, screen } from '@testing-library/react';
-import TodoList from '../components/TodoList';
+import TodoList from "../components/TodoList";
+import AddTodoForm from "../components/AddTodoForm";
+import { render, fireEvent, screen } from "@testing-library/react";
 
-describe('TodoList Component', () => {
-  test('renders todo items', () => {
-    const todos = [
-      { id: 1, text: 'Learn React', completed: false },
-      { id: 2, text: 'Build a Todo App', completed: false },
-    ];
-    render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
+//Test to see if TodoList renders correctly
+test("renders TodoList component with initial todo", () => {
+    render(<TodoList />);
+    expect(screen.getByText("Sample Todo")).toBeInTheDocument();
+    expect(screen.getByRole('checkbox')).not.toBeChecked();
+    expect(screen.getByText("Remove")).toBeInTheDocument();
+});
 
-    expect(screen.getByText('Learn React')).toBeInTheDocument();
-    expect(screen.getByText('Build a Todo App')).toBeInTheDocument();
-  });
 
-  test('toggles todo completion', () => {
-    const toggleTodo = jest.fn();
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    render(<TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={() => {}} />);
+// a test to verify that toggling todos works
+test("toggles todo completion", () => {
+    render(<TodoList />);
 
-    const todoItem = screen.getByText('Learn React');
-    todoItem.click();
-    expect(toggleTodo).toHaveBeenCalledWith(1);
-  });
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
 
-  test('displays message when no todos are present', () => {
-    render(<TodoList todos={[]} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(screen.getByText('No todos available')).toBeInTheDocument();
-  });
+    expect(checkbox).toBeChecked();
+});
 
-  test('matches snapshot', () => {
-    const todos = [{ id: 1, text: 'Learn React', completed: false }];
-    const { asFragment } = render(<TodoList todos={todos} toggleTodo={() => {}} deleteTodo={() => {}} />);
-    expect(asFragment()).toMatchSnapshot();
 
-  });
+// a test to verify that deleting todos works
+test("removes a todo item", () => {
+    render(<TodoList />);
+
+    fireEvent.click(screen.getByText("Remove"));
+
+    expect(screen.queryByText("Sample Todo")).toBeNull();
 });

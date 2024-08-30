@@ -1,25 +1,33 @@
-import React, {useState} from 'react';
+import React from "react";
+import useTodo from "./store/todoStore";
 
-const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
-  if (todos.length === 0) {
-    return <p>No todos available</p>;
-    
-  }
+export default function TodoList() {
+    const todos = useTodo(state => state.todo);
+    const remove = useTodo(state => state.removeTodo);
+    const check = useTodo(state => state.checkedTodo);
+    // const arr1 = ["Tomato", "Orange", "apple"];
+    function removeTodo(id) {
+        remove(id);
+    }
 
-  return (
+    function handleChange(id) {
+        check(id);
+    }
 
-    <ul>
-      {todos.map((todo) => (
-        <li key={todo.id} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-          {todo.text}
-          <button onClick={() => toggleTodo(todo.id)}>
-            {todo.completed ? 'Undo' : 'Complete'}
-          </button>
-          <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-        </li>
-      ))}
-    </ul>
-  );
-};
-
-export default TodoList;
+    return (
+        <div className="todo-container">
+            {todos.map((item) => (
+                <li key={item.id}>
+                    <input type="checkbox"
+                        checked={item.isHeld}
+                        onChange={() => handleChange(item.id)}
+                    />
+                    <span
+                        style={{ textDecoration: item.isHeld ? "line-through" : "none" }}
+                    >{item.text}</span>
+                    <button onClick={() => removeTodo(item.id)}>Remove</button>
+                </li>
+            ))}
+        </div>
+    );
+}
