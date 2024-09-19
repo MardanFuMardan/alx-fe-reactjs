@@ -1,28 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Search from './components/Search';
-import HomePage from './components/HomePage';  // Assuming you have a HomePage component
-import NotFoundPage from './components/NotFoundPage';  // Assuming you have a NotFoundPage component
+import "./index.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Search from "./components/Search";
 
-const App = () => {
+function App() {
   return (
-    <Router>
-      <div>
-        <nav>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/search">Search GitHub User</a></li>
-          </ul>
-        </nav>
-
+    <>
+      <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/" element={<Search />} />
         </Routes>
-      </div>
-    </Router>
+      </Router>
+    </>
   );
-};
+}
 
 export default App;
