@@ -1,20 +1,18 @@
-import React from 'react'
-import {BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css'
-import HomePage from './components/HomePage'
-import UserDetails from './components/UserDetails'
+import React from 'react';
+import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Search from './components/Search';
 
 function App() {
-  return(
+  return (
     <Router>
-      <div className='App'>
+      <div className="App">
         <Routes>
-          <Route path='/' element={<HomePage />} />
-            <Route path='/User/:Details/' element={<UserDetails />} />
+          <Route path="/" element={<Search />} />
         </Routes>
       </div>
     </Router>
-  )
+  );
 }
 
 export default App;
