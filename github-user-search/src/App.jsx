@@ -1,18 +1,14 @@
-import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom'
-import Home from './components/Home'
-
+// src/App.jsx
+import React from 'react';
+import Search from './components/Search';
 
 function App() {
   return (
-    <>
-     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-      </Routes>
-    </BrowserRouter>
-    </>
-   
-  )
+    <div className="App">
+      <h1>GitHub User Search</h1>
+      <Search />
+    </div>
+  );
 }
 
-export default App
+export default App;
