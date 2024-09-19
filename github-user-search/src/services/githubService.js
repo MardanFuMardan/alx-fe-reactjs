@@ -1,26 +1,18 @@
+import axios from 'axios';
 
+// GitHub API endpoint for user search
+const GITHUB_API_URL = 'https://api.github.com/users';
 
-export const searchUsers = async ({ username, location, minRepos, page }) => {
-    const query = [];
-    if (username) query.push(`user:${username}`);
-    if (location) query.push(`location:${location}`);
-    if (minRepos) query.push(`repos:>${minRepos}`);
-  
-    const queryString = query.join('+');
-    const url = `https://api.github.com/search/users?q=${queryString}&page=${page}`;
-  
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-  
-    const data = await response.json();
-    return data.items;
-  };
-
-// import axios from "axios";
-
-// export const fetchUserData = async (username) => {
-//   const response = await axios.get(`https://api.github.com/users/${username}`);
-//   return response.data;
-// };
+// Function to fetch user data from GitHub API
+export const fetchUserData = async (username) => {
+  try {
+    // Make GET request to GitHub API with username
+    const response = await axios.get(`${GITHUB_API_URL}/${username}`);
+    // Return the user data from the response
+    return response.data;
+  } catch (error) {
+    // Handle and rethrow the error for further handling
+    console.error('Error fetching user data', error);
+    throw error;
+  }
+};
