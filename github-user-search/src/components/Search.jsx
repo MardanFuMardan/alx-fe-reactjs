@@ -1,87 +1,79 @@
-// src/components/Search.jsx
-import React, { useState } from 'react';
-import fetchUserData from '../services/githubService';
+import React, { useState } from 'react';            // Importing React and useState for state management
+import { fetchUserData } from '../services/githubService';  // Importing the API service function
+import React from 'react';
+const Search = () => 
+  // State variables
+  const [searchTerm, setSearchTerm] = useState('');   // For the search input value
+  const [userData, setUserData] = useState(null);     // For storing user data from the API
+  const [loading, setLoading] = useState(false);      // For loading state during the API call
+  const [error, setError] = useState(null);           // For error state if the user is not found
 
-const Search = () => {
-  const [username, setUsername] = useState('');
-  const [location, setLocation] = useState('');
-  const [minRepos, setMinRepos] = useState('');
-  const [userData, setUserData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // Function to handle the search
+  const handleSearch = async (e) => {
+    e.preventDefault();            // Prevent the form from refreshing the page
+    if (!searchTerm.trim()) {
+      setError('Please enter a GitHub username.');  // Ensure input is not empty
+      setUserData(null);
+      return;
+    }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setLoading(true);              // Start the loading state
+    setError(null);                // Clear any previous error
+
     try {
-      const data = await fetchUserData(username, location, minRepos);
-      setUserData(data);
+      const data = await fetchUserData(searchTerm);   // Fetch data using the GitHub API
+      setUserData(data);                              // Set the user data if successful
+      setError(null);
     } catch (err) {
-      setError('Looks like we can’t find any users');
+      setUserData(null);                              // Clear previous user data if an error occurs
+      setError('Looks like we can’t find the user');  // Set an error message if the API call fails
     } finally {
-      setLoading(false);
+      setLoading(false);         // Stop the loading state
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 mt-20 text-blue-700 text-center pt-3">GitHub User Search</h1>
-      <form onSubmit={handleSubmit} className="space-y-3 flex flex-col items-center">
-        <div>
-          <label className="block text-md text-blue-500 font-medium">Username:</label>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="mt-1 block w-52 md:72 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="GitHub Username"
-          />
-        </div>
-        <div>
-          <label className="block text-md text-blue-500 font-medium">Location:</label>
-          <input
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="mt-1 block w-52 md:72 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Location"
-          />
-        </div>
-        <div>
-          <label className="block text-md text-blue-500 font-medium">Minimum Repositories:</label>
-          <input
-            type="number"
-            value={minRepos}
-            onChange={(e) => setMinRepos(e.target.value)}
-            className="mt-1 block w-52 md:72 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Minimum Repositories"
-          />
-        </div>
+    <div className="search-container p-4 max-w-md mx-auto">  {/* Tailwind CSS classes for styling */}
+      {/* Form to handle the search input */}
+      <form onSubmit={handleSearch} className="mb-4">
+        <input
+          type="text"
+          placeholder="Search GitHub username..."   // Placeholder text for the search input
+          value={searchTerm}                       // The input value is controlled by React state
+          onChange={(e) => setSearchTerm(e.target.value)}  // Update state on user input
+          className="border rounded px-4 py-2 w-full"   // Tailwind CSS for styling the input
+        />
         <button
-          type="submit"
-          className="w-52 md:72 bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+          type="submit"                              // Submit button for triggering the search
+          className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full"
         >
           Search
         </button>
       </form>
 
-      {loading && <p className="mt-4 text-gray-500 flex flex-col items-center">Loading...</p>}
-      {error && <p className="mt-4 text-red-500 flex flex-col items-center">{error}</p>}
-      {userData.length > 0 && (
-        <div className="mt-4 space-y-4 flex flex-col md:flex-row md:flex-wrap gap-6 items-center">
-          {userData.map(user => (
-            <div key={user.id} className="border p-4 rounded-lg shadow-md w-52 flex flex-col items-center">
-              <img src={user.avatar_url} alt={user.login} className="w-24 h-24 rounded-full" />
-              <h2 className="text-lg font-semibold mt-2">{user.login}</h2>
-              <p className="text-sm text-gray-600">Location: {user.location || 'N/A'}</p>
-              <p className="text-sm text-gray-600">Repositories: {user.public_repos}</p>
-              <a href={user.html_url} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline mt-2 block">View Profile</a>
-            </div>
-          ))}
+      {/* Conditional rendering to display different content based on the state */}
+      {loading && <p>Loading...</p>}   {/* Show loading message while API call is in progress */}
+      {error && <p className="text-red-500">{error}</p>}        {/* Display error message if the API call fails */}
+      {userData && (                   {/* Display user data if API call is successful */}
+        <div className="user-info p-4 border rounded shadow-lg"> 
+          <img
+            src={userData.avatar_url}   // Display the user's GitHub avatar
+            alt={userData.login}        // Alt text for the avatar
+            className="w-16 h-16 rounded-full mx-auto"  // Tailwind CSS classes for styling the image
+          />
+          <h2 className="text-lg font-semibold text-center">{userData.name || userData.login}</h2>   {/* Display user's name or username */}
+          <p className="text-center">
+            <a
+              href={userData.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500"
+            >
+              View GitHub Profile          {/* Link to the user's GitHub profile */}
+            </a>
+          </p>
         </div>
-      )}
-    </div>
+
   );
 };
 
